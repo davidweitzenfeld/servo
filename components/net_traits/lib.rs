@@ -507,6 +507,23 @@ impl ResourceFetchTiming {
             ResourceAttribute::FetchStart => self.fetch_start = precise_time_ns(),
         }
     }
+
+    pub fn set_attribute_from(&mut self, attribute: ResourceAttribute, from: ResourceAttribute) {
+        let value = match from {
+            ResourceAttribute::RedirectCount(_) => self.redirect_count as u64,
+            ResourceAttribute::RequestStart => self.request_start,
+            ResourceAttribute::ResponseStart => self.response_start,
+            ResourceAttribute::RedirectStart(_) => self.redirect_start,
+            ResourceAttribute::FetchStart => self.fetch_start,
+        };
+        match attribute {
+            ResourceAttribute::RedirectCount(_) => self.redirect_count = value as u16,
+            ResourceAttribute::RequestStart => self.request_start = value,
+            ResourceAttribute::ResponseStart => self.response_start = value,
+            ResourceAttribute::RedirectStart(_) => self.redirect_start = value,
+            ResourceAttribute::FetchStart => self.fetch_start = value,
+        }
+    }
 }
 
 /// Metadata about a loaded resource, such as is obtained from HTTP headers.
